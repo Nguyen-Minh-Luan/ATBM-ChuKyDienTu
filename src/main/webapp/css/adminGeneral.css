@@ -1,0 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400;700&display=swap");
+
+* {
+    font-family: "IBM Plex Sans Condensed", sans-serif;
+}
+
+a, a:hover, a:focus, a:active {
+    color: black;
+}
+
+.table {
+    color: black;
+}
+
+.btn-dark {
+    background-color: black;
+}
+
+body {
+    color: black;
+}
+
+.title-create-edit {
+    color: black;
+    font-weight: bold;
+    font-size: 48px;
+}
+
+.custom_active {
+    border-bottom: 2px solid black;
+}
+
+.custom_design:focus,
+.custom_design:active {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #303135;
+}
+
+.custom_design {
+    border: 1.5px solid rgb(134, 134, 134);
+    border-radius: 0px;
+    box-shadow: 0px 1px 4px 0px inset rgba(14, 14, 14, 0.0901960784);
+}
+
+.custom_button {
+    border: 0px;
+    background-color: transparent;
+}
