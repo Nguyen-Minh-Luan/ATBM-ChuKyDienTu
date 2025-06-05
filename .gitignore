@@ -5,7 +5,6 @@ target/
 # Ignore the uploads folder
 /src/main/webapp/uploads/
 /src/main/webapp/assets/uploads/
-/src/main/resources/
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
