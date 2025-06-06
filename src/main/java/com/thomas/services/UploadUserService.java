@@ -10,7 +10,6 @@ import java.util.List;
 
 public class UploadUserService {
     UserDao userDao;
-
     public UploadUserService() {
         this.userDao = new UserDao();
     }
@@ -99,4 +98,5 @@ public class UploadUserService {
     public List<User> searchUser(String query) {
         return userDao.searchUser(query);
     }
+
 }

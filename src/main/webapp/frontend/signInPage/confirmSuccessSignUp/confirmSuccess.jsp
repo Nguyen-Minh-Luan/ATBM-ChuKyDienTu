@@ -42,6 +42,45 @@
                                     <h2 class="fw-bold mb-2 text-uppercase">Tài khoản của bạn đã được xác nhận</h2>
                                     <i class="bi bi-check2"></i>
 
+
+                                    <div class="text-start">
+                                        <h5> Hướng dẫn sử dụng khóa RSA:</h5>
+                                        <ol class="text-dark">
+                                            <li><strong>Bước 1:</strong> Tải về <strong>Public Key</strong>.</li>
+                                            <li><strong>Bước 2:</strong> Tải về <strong>Private Key</strong>(Lưu ý :
+                                                private key trong file đã bị mã hoá . Sau khi tải về hãy dùng tool để
+                                                lấy private key hoàn chỉnh).
+                                            </li>
+                                            <li><strong>Bước 3:</strong> Tải và cài đặt công cụ hỗ trợ ở đường link phía dưới.
+                                            </li>
+                                            <li><strong>Bước 4:</strong> Mở tool chọn Tab "Lấy Private Key".
+                                            </li>
+                                            <li><strong>Bước 5:</strong> Thêm file private key vừa tải về vào ô "Nhập Private Key" và nhập mật khẩu người dùng vào ô "Nhập mật khẩu" .
+                                            </li>
+                                            <li><strong>Bước 6:</strong> Bấm "Tạo Private Key". Private Key sẽ hiển thị ở ô "Private Key" , người dùng có thể lưu lại nếu muốn.
+                                            </li>
+                                        </ol>
+
+                                        <div class="alert alert-warning" role="alert">
+                                            ⚠️ Hãy giữ gìn <strong>Private Key</strong> cẩn thận. Không chia sẻ nó với
+                                            bất kỳ ai!
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-column align-items-center mt-4">
+                                        <a href="${pageContext.request.contextPath}/download/publicKey"
+                                           class="btn btn-outline-primary btn-lg mb-2" download>
+                                            📥 Tải Public Key
+                                        </a>
+                                        <a href="${pageContext.request.contextPath}/download/privateKey"
+                                           class="btn btn-outline-danger btn-lg mb-3" download>
+                                            🔐 Tải Private Key
+                                        </a>
+                                        <a href="${pageContext.request.contextPath}/tools/Tool.zip"
+                                           class="btn btn-success btn-lg" download>
+                                            🛠️ Tải công cụ ký/giải mã
+                                        </a>
+                                    </div>
                                     <a href="${pageContext.request.contextPath}/"
                                        class="btn border-dark btn-lg px-5 text-dark"
                                     >Quay về trang chủ
