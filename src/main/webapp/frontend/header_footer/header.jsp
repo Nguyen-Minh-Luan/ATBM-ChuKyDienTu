@@ -211,6 +211,10 @@
                         </c:if>
 
                         <li>
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/generateKey">Tạo khóa mới</a>
+                        </li>
+
+                        <li>
                             <form method="POST" action="${pageContext.request.contextPath}/logout">
                                 <button type="submit" class="dropdown-item"
                                 >Đăng xuất
