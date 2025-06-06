@@ -34,6 +34,33 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/footer.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/checkoutPage.css"/>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 100px;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background: #fff;
+            margin: auto;
+            padding: 30px;
+            width: 60%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -186,26 +213,51 @@
                 </div>
                 <p class="text-muted small mb-0">(bao gồm cả thuế)</p>
             </div>
-            <c:choose>
-                <c:when test="${userAddresses == null || paymentMethods == null || paymentMethods.isEmpty()||sessionScope.auth==null}">
-                    <button
-                            class="btn btn-dark mt-4 fs-4 custom__btn w-100" disabled
-                            id="openFormButtonPayment">
-                        Thanh toán với Google
-                    </button>
-                </c:when>
-                <c:otherwise>
-                    <form method="POST" action="${request.context.path}/Order">
-                    <input class="submitPaymentMethod" type="hidden" name="paymentMethod" value="GooglePay">
-                    <button type="submit"
-                            class="btn btn-dark mt-4 fs-4 custom__btn w-100"
-                            id="openFormButtonPayment">
-                        Thanh toán với Google
-                    </button>
-                    </form>
+                    <form id="signatureFlowForm">
+                        <input type="hidden" name="paymentMethod" value="GooglePay">
 
-                </c:otherwise>
-            </c:choose>
+                        <button type="button"
+                                class="btn btn-dark mt-4 fs-4 custom__btn w-100"
+                                id="openSignatureModalBtn">
+                            Ký và thanh toán
+                        </button>
+                    </form>
+            <c:if test="${not empty messageRedirect}">
+                <div class="alert alert-danger" role="alert">
+                        ${messageRedirect}
+                </div>
+            </c:if>
+
+            <!-- Modal -->
+            <div id="signatureModal" class="modal">
+                <div class="modal-content">
+
+                    <h3>🔐 Xác minh chữ ký đơn hàng</h3>
+                    <p>Sao chép hash sau và ký bằng phần mềm của bạn:</p>
+
+                    <!-- ✅ Gán id để JS copy -->
+                    <textarea id="orderHashText" readonly rows="4" cols="80">
+            <%= request.getAttribute("orderHash") %>
+        </textarea>
+
+                    <!-- ✅ Đặt type="button" để tránh submit -->
+                    <button class="btn btn-outline-primary" type="button" onclick="copyHashToClipboard()">
+                        📋 Sao chép Hash
+                    </button>
+
+                    <form action="/verifySignature" method="post">
+                        <input type="hidden" name="hashValue" value="<%= request.getAttribute("orderHash") %>" />
+                        <input type="hidden" name="paymentMethod" value="GooglePay" />
+
+                        <p>Dán chữ ký số của bạn:</p>
+                        <textarea name="signature" rows="10" cols="80" required></textarea><br><br>
+
+                        <button type="submit" class="btn btn-success">🔐 Gửi và xác minh chữ ký</button>
+                    </form>
+                </div>
+            </div>
+
+
 
 
             <div class="input-group custom_input_group custom_input--btn mt-4">
@@ -225,6 +277,36 @@
 </div>
 
 <jsp:include page="/frontend/header_footer/footer.jsp"/>
+<script>
+    function openSignatureModal() {
+        document.getElementById("signatureModal").style.display = "block";
+    }
+    function closeSignatureModal() {
+        document.getElementById("signatureModal").style.display = "none";
+    }
+    window.onclick = function(event) {
+        const modal = document.getElementById("signatureModal");
+        if (event.target === modal) {
+            closeSignatureModal();
+        }
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("openSignatureModalBtn")
+            .addEventListener("click", openSignatureModal);
+    });
+        function copyHashToClipboard() {
+        const textarea = document.getElementById("orderHashText");
+        textarea.select();
+        textarea.setSelectionRange(0, 99999); // mobile support
+
+        navigator.clipboard.writeText(textarea.value.trim())
+        .then(() => {
+    })
+        .catch(err => {
+        alert("❌ Không thể sao chép: " + err);
+    });
+    }
+</script>
 
 </body>
 </html>

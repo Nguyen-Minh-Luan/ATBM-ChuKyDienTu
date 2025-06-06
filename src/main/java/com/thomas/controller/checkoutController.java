@@ -10,8 +10,11 @@ import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +62,37 @@ public class checkoutController extends HttpServlet {
         request.setAttribute("shipmentPrice", formattedShipmentPrice);
         request.setAttribute("grandTotal", formattedGrandTotal);
         request.setAttribute("totalPrice", formattedTotalPrice);
+
+        String errorMsg = request.getParameter("error");
+        if (errorMsg != null && !errorMsg.isEmpty()) {
+            request.setAttribute("messageRedirect", errorMsg);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (CartItem cartItem : cart.values()) {
+            sb.append(cartItem.getBelt().getId())
+                    .append("|")
+                    .append(cartItem.getQuantity())
+                    .append("|")
+                    .append(cartItem.getPrice())
+                    .append(";");
+        }
+        sb.append("total=").append(totalPrice)
+                .append("|shipment=").append(shipmentPrice)
+                .append("|discount=").append(discountAmount)
+                .append("|grandTotal=").append(grandTotal);
+        String orderData = sb.toString();
+
+        String hashValue = "";
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(orderData.getBytes(StandardCharsets.UTF_8));
+            hashValue = Base64.getEncoder().encodeToString(hash);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        request.setAttribute("orderHash", hashValue);
         request.getRequestDispatcher("/frontend/cartPage/checkoutPage/checkoutPage.jsp").forward(request, response);
     }
 
