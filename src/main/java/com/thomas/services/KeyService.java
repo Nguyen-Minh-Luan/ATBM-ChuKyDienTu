@@ -8,7 +8,12 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -21,6 +26,11 @@ public class KeyService {
     PublicKey pk;
     PrivateKey pv;
     byte[] salt ;
+
+    public KeyService(PublicKeyDao pbdao, UserDao udao) {
+        this.pbdao = pbdao;
+        this.udao = udao;
+    }
 
     public byte[] genSalt() {
         byte[] salt = new byte[16];
@@ -60,14 +70,56 @@ public class KeyService {
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePrivate(spec);
     }
-
-
-    public File privateKeyFile(){
-
+    public String keyToBase64(byte[] key) {
+        return Base64.getEncoder().encodeToString(key);
     }
 
-    public int insertPublicKeyService(int id, int userId , int keyVersion, String publicKey, LocalDate date, int is_Active) {
+    public SecretKey base64ToKeyAES(String base64Key) {
+        byte[] keyBytes = Base64.getDecoder().decode(base64Key);
+        return new SecretKeySpec(keyBytes, "AES");
+    }
 
-        return pbdao.insertPublicKey(id, userId, keyVersion, publicKey, date, is_Active);
+
+    public File privateKeyFile(String privateKey, String salt, int count) {
+        File file = new File("src/main/webapp/assets/key/privateKey" + count + ".txt");
+
+        try {
+            file.getParentFile().mkdirs(); // Tạo thư mục nếu chưa có
+
+            // Sử dụng BufferedOutputStream để tăng hiệu năng
+            try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+                String content = salt + "\n" + privateKey;
+                bos.write(content.getBytes("UTF-8")); // Ghi bằng UTF-8
+                bos.flush(); // Đảm bảo ghi hết vào file
+            }
+
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public File publicKeyFile(String publicKey, int count) {
+        String fileName = "src/main/webapp/assets/key/publicKey" + count + ".txt";
+        File file = new File(fileName);
+
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+            bos.write(publicKey.getBytes(StandardCharsets.UTF_8));
+            bos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null; // hoặc throw exception nếu muốn
+        }
+
+        return file;
+    }
+
+    public int insertPublicKeyService(int userId, String publicKey, LocalDate date, int is_Active) {
+        return pbdao.insertPublicKey(userId, publicKey, date, is_Active);
+    }
+    public int updateIsActive(int userId, int isActive) {
+        return pbdao.updateIsActive(userId,isActive);
     }
 }
