@@ -1,7 +1,7 @@
 /*
- Navicat Premium Dump SQL
+ Navicat Premium Data Transfer
 
- Source Server         : WebBanThatLung
+ Source Server         : web
  Source Server Type    : MySQL
  Source Server Version : 100432 (10.4.32-MariaDB)
  Source Host           : localhost:3306
@@ -11,7 +11,7 @@
  Target Server Version : 100432 (10.4.32-MariaDB)
  File Encoding         : 65001
 
- Date: 02/06/2025 04:40:52
+ Date: 06/06/2025 22:24:59
 */
 
 SET NAMES utf8mb4;
@@ -31,7 +31,7 @@ CREATE TABLE `addresses`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `userId`(`userId` ASC) USING BTREE,
   CONSTRAINT `addresses_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of addresses
@@ -74,7 +74,7 @@ CREATE TABLE `beltcategory`  (
   INDEX `categoryId`(`categoryId` ASC) USING BTREE,
   CONSTRAINT `beltcategory_ibfk_1` FOREIGN KEY (`beltId`) REFERENCES `belts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `beltcategory_ibfk_2` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of beltcategory
@@ -257,7 +257,7 @@ CREATE TABLE `beltfavorites`  (
   INDEX `favoriteId`(`favoriteId` ASC) USING BTREE,
   CONSTRAINT `beltfavorites_ibfk_1` FOREIGN KEY (`beltId`) REFERENCES `belts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `beltfavorites_ibfk_2` FOREIGN KEY (`favoriteId`) REFERENCES `favorites` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of beltfavorites
@@ -362,13 +362,13 @@ CREATE TABLE `belts`  (
   `gender` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `stockQuantity` int NULL DEFAULT 0,
   `releaseDate` date NULL DEFAULT NULL,
-  `createdAt` datetime NULL DEFAULT current_timestamp(),
-  `updatedAt` datetime NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP,
+  `createdAt` datetime NULL DEFAULT current_timestamp,
+  `updatedAt` datetime NULL DEFAULT current_timestamp ON UPDATE CURRENT_TIMESTAMP,
   `isDeleted` int NULL DEFAULT 0,
   `discountPercent` double NULL DEFAULT 0,
   `materialBelt` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 81 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 81 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of belts
@@ -463,7 +463,7 @@ CREATE TABLE `beltviews`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unique_belt_view`(`beltId` ASC, `viewDate` ASC) USING BTREE,
   CONSTRAINT `beltviews_ibfk_1` FOREIGN KEY (`beltId`) REFERENCES `belts` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 419 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 422 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of beltviews
@@ -611,6 +611,7 @@ INSERT INTO `beltviews` VALUES (415, 16, '2025-01-15 00:00:00', 1);
 INSERT INTO `beltviews` VALUES (416, 50, '2025-01-15 00:00:00', 1);
 INSERT INTO `beltviews` VALUES (417, 33, '2025-01-15 00:00:00', 1);
 INSERT INTO `beltviews` VALUES (418, 17, '2025-01-15 00:00:00', 1);
+INSERT INTO `beltviews` VALUES (419, 1, '2025-06-06 00:00:00', 3);
 
 -- ----------------------------
 -- Table structure for categories
@@ -620,7 +621,7 @@ CREATE TABLE `categories`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 110 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 110 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of categories
@@ -742,9 +743,9 @@ DROP TABLE IF EXISTS `collectiondetails`;
 CREATE TABLE `collectiondetails`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `createdAt` datetime NULL DEFAULT current_timestamp(),
+  `createdAt` datetime NULL DEFAULT current_timestamp,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of collectiondetails
@@ -761,7 +762,7 @@ CREATE TABLE `collections`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `collectionDetailId`(`collectionDetailId` ASC) USING BTREE,
   CONSTRAINT `collections_ibfk_1` FOREIGN KEY (`collectionDetailId`) REFERENCES `collectiondetails` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of collections
@@ -779,7 +780,7 @@ CREATE TABLE `coupons`  (
   `endDate` datetime NULL DEFAULT NULL,
   `isActive` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of coupons
@@ -804,7 +805,7 @@ CREATE TABLE `couponusage`  (
   `couponId` int NOT NULL,
   `userId` int NOT NULL,
   `orderId` int NOT NULL,
-  `usedAt` datetime NULL DEFAULT current_timestamp(),
+  `usedAt` datetime NULL DEFAULT current_timestamp,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `couponId`(`couponId` ASC) USING BTREE,
   INDEX `userId`(`userId` ASC) USING BTREE,
@@ -812,7 +813,7 @@ CREATE TABLE `couponusage`  (
   CONSTRAINT `couponusage_ibfk_1` FOREIGN KEY (`couponId`) REFERENCES `coupons` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `couponusage_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `couponusage_ibfk_3` FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of couponusage
@@ -831,7 +832,7 @@ CREATE TABLE `favorites`  (
   INDEX `userId`(`userId` ASC) USING BTREE,
   CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`beltId`) REFERENCES `belts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 104 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 104 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of favorites
@@ -936,7 +937,7 @@ CREATE TABLE `imageentry`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `beltId`(`beltId` ASC) USING BTREE,
   CONSTRAINT `imageentry_ibfk_1` FOREIGN KEY (`beltId`) REFERENCES `belts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 599 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 599 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of imageentry
@@ -1543,7 +1544,7 @@ CREATE TABLE `orderdetails`  (
   INDEX `beltId`(`beltId` ASC) USING BTREE,
   CONSTRAINT `orderdetails_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `orderdetails_ibfk_2` FOREIGN KEY (`beltId`) REFERENCES `belts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 221 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 223 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of orderdetails
@@ -1715,6 +1716,8 @@ INSERT INTO `orderdetails` VALUES (217, 75, 26.171, 50, 10);
 INSERT INTO `orderdetails` VALUES (218, 75, 107.458, 54, 1);
 INSERT INTO `orderdetails` VALUES (219, 75, 603.012, 55, 1);
 INSERT INTO `orderdetails` VALUES (220, 75, 220.063, 13, 1);
+INSERT INTO `orderdetails` VALUES (221, 76, 176, 1, 1);
+INSERT INTO `orderdetails` VALUES (222, 77, 176, 1, 1);
 
 -- ----------------------------
 -- Table structure for orders
@@ -1725,7 +1728,7 @@ CREATE TABLE `orders`  (
   `userID` int NOT NULL,
   `paymentMethodId` int NULL DEFAULT NULL,
   `addressesId` int NULL DEFAULT NULL,
-  `orderDate` datetime NULL DEFAULT current_timestamp(),
+  `orderDate` datetime NULL DEFAULT current_timestamp,
   `orderTotal` double NOT NULL,
   `orderStatus` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `isDeleted` int NULL DEFAULT 0,
@@ -1736,7 +1739,7 @@ CREATE TABLE `orders`  (
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`paymentMethodId`) REFERENCES `paymentmethods` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`userID`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `orders_ibfk_3` FOREIGN KEY (`addressesId`) REFERENCES `addresses` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 76 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 78 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of orders
@@ -1804,6 +1807,8 @@ INSERT INTO `orders` VALUES (72, 13, 1, 27, '2025-01-08 00:00:00', 1489.935, 'Đ
 INSERT INTO `orders` VALUES (73, 13, 1, 27, '2025-01-08 00:00:00', 549.891, 'Đang xử lý', 0);
 INSERT INTO `orders` VALUES (74, 13, 1, 27, '2025-01-08 00:00:00', 1059.945, 'Đang xử lý', 0);
 INSERT INTO `orders` VALUES (75, 13, 1, 27, '2025-01-08 00:00:00', 1207.243, 'Đang xử lý', 0);
+INSERT INTO `orders` VALUES (76, 7, 1, 9, '2025-06-06 00:00:00', 191, 'Đang xử lý', 0);
+INSERT INTO `orders` VALUES (77, 7, 1, 9, '2025-06-06 00:00:00', 191, 'Đang xử lý', 0);
 
 -- ----------------------------
 -- Table structure for paymentmethods
@@ -1814,7 +1819,7 @@ CREATE TABLE `paymentmethods`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `isActive` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of paymentmethods
@@ -1822,6 +1827,29 @@ CREATE TABLE `paymentmethods`  (
 INSERT INTO `paymentmethods` VALUES (1, 'GooglePay', 1);
 INSERT INTO `paymentmethods` VALUES (2, 'Delivery', 1);
 INSERT INTO `paymentmethods` VALUES (3, 'Bank', 1);
+
+-- ----------------------------
+-- Table structure for public_keys
+-- ----------------------------
+DROP TABLE IF EXISTS `public_keys`;
+CREATE TABLE `public_keys`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `key_version` int NOT NULL,
+  `public_key` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp,
+  `is_active` tinyint(1) NULL DEFAULT 1,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `user_id`(`user_id` ASC, `key_version` ASC) USING BTREE,
+  CONSTRAINT `public_keys_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of public_keys
+-- ----------------------------
+INSERT INTO `public_keys` VALUES (1, 7, 1, 'pub1', '2025-06-06 21:18:50', 1);
+INSERT INTO `public_keys` VALUES (2, 7, 2, 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCfsNglFZoPt8IUPfjUcqitgrdKHmGSktCX0WvoOwxBS9t2ySwVjqMJyz/ZtVdHWVHBIkwZJehlcDULZAtgncDdcnL2lMRWoAD8AeVLqwH0W/Odc/qDtnYCLS0TgA1PJBA+u/BQ6hdiylHVg0ovtEM78yTZFjggoJ/9e63WTPeSGQIDAQAB', '2025-06-06 21:19:07', 1);
+INSERT INTO `public_keys` VALUES (3, 4, 1, 'a1', '2025-06-06 21:19:27', 1);
 
 -- ----------------------------
 -- Table structure for reviews
@@ -1833,11 +1861,11 @@ CREATE TABLE `reviews`  (
   `userId` int NOT NULL,
   `content` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `ratingStar` int NULL DEFAULT NULL,
-  `createdAt` datetime NULL DEFAULT current_timestamp(),
+  `createdAt` datetime NULL DEFAULT current_timestamp,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `beltId`(`beltId` ASC) USING BTREE,
   CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`beltId`) REFERENCES `belts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of reviews
@@ -1847,6 +1875,30 @@ INSERT INTO `reviews` VALUES (5, 1, 12, 'Sản phẩm tốt nhưng quá đắt t
 INSERT INTO `reviews` VALUES (6, 1, 12, 'Vừa được hỗ trợ đổi trả lại sản phẩm lỗi này , chất lượng mới khá tốt , cảm ơn shop', 5, '2025-01-08 00:00:00');
 INSERT INTO `reviews` VALUES (7, 1, 8, '  Sản phẩm chất lượng cao , phù hợp với giá tiền', 5, '2025-01-08 00:00:00');
 INSERT INTO `reviews` VALUES (8, 1, 8, '              ', 5, '2025-01-08 00:00:00');
+
+-- ----------------------------
+-- Table structure for signatures
+-- ----------------------------
+DROP TABLE IF EXISTS `signatures`;
+CREATE TABLE `signatures`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `order_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `key_version` int NOT NULL,
+  `signature` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `order_id`(`order_id` ASC) USING BTREE,
+  INDEX `user_id`(`user_id` ASC, `key_version` ASC) USING BTREE,
+  CONSTRAINT `signatures_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `signatures_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `signatures_ibfk_3` FOREIGN KEY (`user_id`, `key_version`) REFERENCES `public_keys` (`user_id`, `key_version`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of signatures
+-- ----------------------------
+INSERT INTO `signatures` VALUES (1, 40, 7, 2, 'alo1', '2025-06-06 21:20:34');
 
 -- ----------------------------
 -- Table structure for userpaymentmethods
@@ -1860,7 +1912,7 @@ CREATE TABLE `userpaymentmethods`  (
   INDEX `paymentMethodId`(`paymentMethodId` ASC) USING BTREE,
   CONSTRAINT `userpaymentmethods_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `userpaymentmethods_ibfk_2` FOREIGN KEY (`paymentMethodId`) REFERENCES `paymentmethods` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of userpaymentmethods
@@ -1877,7 +1929,7 @@ CREATE TABLE `users`  (
   `dateOfBirth` datetime NULL DEFAULT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `createAt` datetime NULL DEFAULT current_timestamp(),
+  `createAt` datetime NULL DEFAULT current_timestamp,
   `isDeleted` int NULL DEFAULT 0,
   `gender` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `phoneNumber` bigint NULL DEFAULT NULL,
@@ -1885,7 +1937,7 @@ CREATE TABLE `users`  (
   `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `isActive` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of users
@@ -1901,5 +1953,23 @@ INSERT INTO `users` VALUES (10, 'sdfsfsdfsdf', 'qwe@gmail.com', '2023-06-27 00:0
 INSERT INTO `users` VALUES (11, 'asdasdasd', 'rty@gmail.com', '2024-01-08 00:00:00', '202cb962ac59075b964b07152d234b70', NULL, '2025-01-08 00:00:00', 0, 'M', 342342, 0, NULL, 1);
 INSERT INTO `users` VALUES (12, 'huynhminhthang246@gmail.com', 'zxc@gmail.com', '2024-04-15 00:00:00', '202cb962ac59075b964b07152d234b70', NULL, '2025-01-08 00:00:00', 0, 'M', 123123, 1, NULL, 1);
 INSERT INTO `users` VALUES (13, 'dfgdfgdfgdfgfd', 'fgh@gmail.com', '2024-02-19 00:00:00', '202cb962ac59075b964b07152d234b70', NULL, '2025-01-08 00:00:00', 0, 'F', 21312312, 0, NULL, 1);
+
+-- ----------------------------
+-- Triggers structure for table public_keys
+-- ----------------------------
+DROP TRIGGER IF EXISTS `before_insert_public_key`;
+delimiter ;;
+CREATE TRIGGER `before_insert_public_key` BEFORE INSERT ON `public_keys` FOR EACH ROW BEGIN
+    DECLARE max_version INT;
+
+    SELECT COALESCE(MAX(key_version), 0)
+    INTO max_version
+    FROM public_keys
+    WHERE user_id = NEW.user_id;
+
+    SET NEW.key_version = max_version + 1;
+END
+;;
+delimiter ;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -3,7 +3,10 @@ package com.thomas.services;
 import com.thomas.dao.PublicKeyDao;
 import com.thomas.dao.UserDao;
 import com.thomas.dao.model.PublicKeyEntity;
+import com.thomas.dao.model.User;
+import jakarta.servlet.ServletContext;
 
+import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -31,9 +34,9 @@ public class KeyService {
     PrivateKey pv;
     byte[] salt ;
 
-    public KeyService(PublicKeyDao pbdao, UserDao udao) {
-        this.pbdao = pbdao;
-        this.udao = udao;
+    public KeyService() {
+        this.pbdao = new PublicKeyDao();
+        this.udao = new UserDao();
     }
 
     public byte[] genSalt() {
@@ -85,9 +88,22 @@ public class KeyService {
         return new SecretKeySpec(keyBytes, "AES");
     }
 
+    public String encryptText(String plainText, byte[] keyBytes) throws Exception {
+        SecretKeySpec keySpec = new SecretKeySpec(keyBytes, "AES");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 
-    public File privateKeyFile(String privateKey, String salt, int count) {
-        File file = new File("src/main/webapp/assets/key/privateKey" + count + ".txt");
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+
+        byte[] encrypted = cipher.doFinal(plainText.getBytes("UTF-8"));
+        return Base64.getEncoder().encodeToString(encrypted);
+    }
+
+    public File privateKeyFile(String privateKey, String salt,int userId , int count, ServletContext servletContext) {
+
+        String realPath = servletContext.getRealPath("/assets/key/");
+        System.out.println("Path để ghi file: " + realPath);
+        File file = new File(realPath, "privateKey" + userId +"V"+ count + ".txt");
+
 
         try {
             file.getParentFile().mkdirs(); // Tạo thư mục nếu chưa có
@@ -107,8 +123,15 @@ public class KeyService {
     }
 
 
-    public File publicKeyFile(String publicKey, int count) {
-        File file = new File("src/main/webapp/assets/key/publicKey" + count + ".txt");
+    public File publicKeyFile(String publicKey,int userId, int count,ServletContext servletContext) {
+        String realPath = servletContext.getRealPath("/assets/key/");
+        System.out.println("Path để ghi file: " + realPath);
+        File file = new File(realPath, "publicKey"+ userId +"V"+ count + ".txt");
+
+        File dir = new File(realPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
         try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
             bos.write(publicKey.getBytes(StandardCharsets.UTF_8));
             bos.flush();
@@ -120,7 +143,7 @@ public class KeyService {
         return file;
     }
 
-    public int insertPublicKeyService(int userId, String publicKey, LocalDate date, int is_Active) {
+    public int insertPublicKey(int userId, String publicKey, LocalDate date, int is_Active) {
         return pbdao.insertPublicKey(userId, publicKey, date, is_Active);
     }
     public int updateIsActive(int userId, int  isActive) {
@@ -137,5 +160,12 @@ public class KeyService {
                 .filter(k -> k.getIsActive() == 1) // lọc theo isActive = 1
                 .max(Comparator.comparingInt(PublicKeyEntity::getKeyVersion)); // lấy keyVersion lớn nhất
     }
-
+    public User findUserByEmail(String email){
+        return udao.findUserEmail(email);
+    }
+    public int getKeyVersionActivated(int userId) {
+        return pbdao.getKeyVersionActivated(userId);
+    }
+    public static void main(String[] args) throws NoSuchAlgorithmException {
+    }
 }

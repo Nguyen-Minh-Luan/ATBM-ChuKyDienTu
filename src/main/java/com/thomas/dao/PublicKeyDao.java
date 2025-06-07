@@ -11,8 +11,8 @@ public class PublicKeyDao {
 
     public int insertPublicKey(int userId, String publicKey, LocalDate date, int is_Active) {
         return JDBIConnect.get().withHandle(h -> {
-            String sql = "INSERT INTO public_keys(id,user_id,key_version,public_key,created_at,is_active)\n" +
-                    "VALUES (:id, :userId, :keyVersion, :publicKey,:date ,:is_Active)";
+            String sql = "INSERT INTO public_keys(user_id,public_key,created_at,is_active)\n" +
+                    "VALUES (:userId, :publicKey,:date ,:is_Active)";
             return h.createUpdate(sql)
                     .bind("userId", userId)
                     .bind("publicKey", publicKey)
@@ -30,6 +30,17 @@ public class PublicKeyDao {
                     .execute();
         });
     }
+    public int getKeyVersionActivated(int userId) {
+        return JDBIConnect.get().withHandle(h -> {
+            return h.createQuery("SELECT key_version FROM public_keys WHERE user_id = :userId AND is_active = 1 ORDER BY key_version DESC LIMIT 1")
+                    .bind("userId", userId)
+                    .mapTo(Integer.class)
+                    .findFirst()
+                    .orElse(0);
+        });
+    }
+
+
 
 
     public List<PublicKeyEntity> getAllKeysByUserId(int userId) {

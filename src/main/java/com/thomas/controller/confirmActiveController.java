@@ -20,6 +20,10 @@ public class confirmActiveController extends HttpServlet {
         if (isValid && active) {
             request.setAttribute("active", 1);
             request.setAttribute("messageRedirect", "Liên kết kích hoặc không hợp lệ");
+            String keyVersion = request.getParameter("keyVersion");
+            String userId = (String) request.getParameter("userId");
+            request.setAttribute("keyVersion",keyVersion);
+            request.setAttribute("userId", userId);
         }
         if (message != null) {
             request.setAttribute("messageRedirect", message);
