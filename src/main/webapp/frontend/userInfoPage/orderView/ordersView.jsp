@@ -143,7 +143,15 @@
                         </c:forEach>
 
                         <p>Tổng tiền: ${totalPrice} đ</p>
-
+                        <c:set var="sigObj" value="${signatureMap[order.id]}" />
+                        <c:if test="${not empty sigObj}">
+                            <h2 class="ms-1 fw-light custom_size--16">
+                                Chữ ký: <code>${sigObj.signature}</code>
+                            </h2>
+                            <h2 class="ms-1 fw-light custom_size--16">
+                                Phiên bản khóa: ${sigObj.keyVersion}
+                            </h2>
+                        </c:if>
                     </h2>
                     <c:forEach var="item" items="${order.orderDetails}">
                         <div class="container ps-sm-0 border rounded mb-3" id="item1">
