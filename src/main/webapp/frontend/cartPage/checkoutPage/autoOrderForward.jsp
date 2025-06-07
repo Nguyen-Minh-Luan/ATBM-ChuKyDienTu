@@ -9,6 +9,10 @@
 <body>
 <form id="autoOrderForm" method="POST" action="${pageContext.request.contextPath}/Order">
   <input type="hidden" name="paymentMethod" value="${paymentMethod}" />
+  <input type="hidden" name="sign" value="${sign}" />
+  <input type="hidden" name="keyVer" value="${keyVer}" />
+  <input type="hidden" name="hash" value="${hash}" />
+
 </form>
 
 <script>

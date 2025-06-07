@@ -2,6 +2,7 @@ package com.thomas.services;
 
 import com.thomas.dao.PublicKeyDao;
 import com.thomas.dao.UserDao;
+import com.thomas.dao.model.PublicKeyEntity;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -19,6 +20,9 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 public class KeyService {
     PublicKeyDao pbdao;
@@ -38,10 +42,12 @@ public class KeyService {
         this.salt = salt;
         return salt;
     }
+
     public boolean changeSalt(String newSalt) {
         this.salt = Base64.getDecoder().decode(newSalt);
         return true;
     }
+
     public SecretKey genKeyFromPassword(String password) throws Exception {
         int iterationCount = 65536;
         int keyLength = 128;
@@ -120,4 +126,16 @@ public class KeyService {
     public int updateIsActive(int userId, int  isActive) {
         return pbdao.updateIsActive(userId,isActive);
     }
+
+    public List<PublicKeyEntity> getAllPublicKeysByUserId(int userId) {
+        return pbdao.getAllKeysByUserId(userId);
+    }
+
+    public Optional<PublicKeyEntity> getKeyActive(int userId) {
+        List<PublicKeyEntity> keys = getAllPublicKeysByUserId(userId);
+        return keys.stream()
+                .filter(k -> k.getIsActive() == 1) // lọc theo isActive = 1
+                .max(Comparator.comparingInt(PublicKeyEntity::getKeyVersion)); // lấy keyVersion lớn nhất
+    }
+
 }
