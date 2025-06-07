@@ -2,7 +2,9 @@ package com.thomas.controller;
 
 import com.thomas.dao.model.Order;
 import com.thomas.dao.model.OrderDetails;
+import com.thomas.dao.model.SignatureEntity;
 import com.thomas.dao.model.User;
+import com.thomas.services.SignatureService;
 import com.thomas.services.UploadOrderDetailService;
 import com.thomas.services.UploadOrderService;
 import com.thomas.services.UploadProductService;
@@ -13,9 +15,7 @@ import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @WebServlet(name = "userViewOrderController", value = "/viewOrders")
 public class userViewOrderController extends HttpServlet {
@@ -31,9 +31,14 @@ public class userViewOrderController extends HttpServlet {
         symbols.setGroupingSeparator(',');
         symbols.setDecimalSeparator('.');
         HttpSession session = request.getSession();
+        SignatureService signatureService = new SignatureService();
         User user = (User) session.getAttribute("auth");
         List<Order> userOrders = uploadOrderService.getAllOrdersByUserId(user.getId());
+        Map<Integer, SignatureEntity> signatureMap = new HashMap<>();
+        SignatureEntity signatureEntity;
         for (Order order : userOrders) {
+            signatureEntity = signatureService.getSignatureByOrder(order.getId());
+            signatureMap.put(order.getId(), signatureEntity);
             uploadOrderDetailService.setOrderDetails(order);
         }
         for (Order order : userOrders) {
@@ -52,6 +57,7 @@ public class userViewOrderController extends HttpServlet {
             }
         });
         request.setAttribute("orders", userOrders);
+        request.setAttribute("signatureMap", signatureMap);
         request.getRequestDispatcher("/frontend/userInfoPage/orderView/ordersView.jsp").forward(request, response);
     }
 
