@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,16 +69,19 @@
                                     </div>
 
                                     <div class="d-flex flex-column align-items-center mt-4">
-                                        <a href="${pageContext.request.contextPath}/download/publicKey"
-                                           class="btn btn-outline-primary btn-lg mb-2" download>
+                                        <p>Context Path: ${pageContext.request.contextPath}/downloadController?type=public&userId=${userId}&version=${keyVersion}</p>
+                                        <a href="${pageContext.request.contextPath}/downloadController?type=public&userId=${userId}&version=1"
+                                           class="btn btn-outline-primary btn-lg mb-2">
                                             📥 Tải Public Key
                                         </a>
-                                        <a href="${pageContext.request.contextPath}/download/privateKey"
-                                           class="btn btn-outline-danger btn-lg mb-3" download>
+
+                                        <a href="${pageContext.request.contextPath}/downloadController?type=private&userId=${userId}&version=1"
+                                           class="btn btn-outline-danger btn-lg mb-2">
                                             🔐 Tải Private Key
                                         </a>
-                                        <a href="${pageContext.request.contextPath}/tools/Tool.zip"
-                                           class="btn btn-success btn-lg" download>
+
+                                        <a href="https://drive.google.com/uc?export=download&id=1hGw-APz6mKfM6u1y-QoiGABFAzsVAINK"
+                                           class="gdrive btn btn-success btn-lg ">
                                             🛠️ Tải công cụ ký/giải mã
                                         </a>
                                     </div>

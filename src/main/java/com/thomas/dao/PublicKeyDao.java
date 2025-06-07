@@ -9,20 +9,39 @@ import java.util.List;
 public class PublicKeyDao {
 
 
-    public int insertPublicKey(int id, int userId , int keyVersion, String publicKey, LocalDate date, int is_Active) {
+    public int insertPublicKey(int userId, String publicKey, LocalDate date, int is_Active) {
         return JDBIConnect.get().withHandle(h -> {
-            String sql = "INSERT INTO public_keys(id,user_id,key_version,public_key,created_at,is_active)\n" +
-                    "VALUES (:id, :userId, :keyVersion, :publicKey,:date ,:is_Active)";
+            String sql = "INSERT INTO public_keys(user_id,public_key,created_at,is_active)\n" +
+                    "VALUES (:userId, :publicKey,:date ,:is_Active)";
             return h.createUpdate(sql)
-                    .bind("id", id)
                     .bind("userId", userId)
-                    .bind("keyVersion", keyVersion)
                     .bind("publicKey", publicKey)
                     .bind("date", date)
                     .bind("is_Active", is_Active)
                     .execute();
         });
     }
+    public int updateIsActive(int userId, int is_Active) {
+        return JDBIConnect.get().withHandle(h -> {
+            String sql = "UPDATE public_keys SET is_active = :isActive WHERE user_id = :userId";
+            return h.createUpdate(sql)
+                    .bind("isActive", is_Active)
+                    .bind("userId", userId)
+                    .execute();
+        });
+    }
+    public int getKeyVersionActivated(int userId) {
+        return JDBIConnect.get().withHandle(h -> {
+            return h.createQuery("SELECT key_version FROM public_keys WHERE user_id = :userId AND is_active = 1 ORDER BY key_version DESC LIMIT 1")
+                    .bind("userId", userId)
+                    .mapTo(Integer.class)
+                    .findFirst()
+                    .orElse(0);
+        });
+    }
+
+
+
 
     public List<PublicKeyEntity> getAllKeysByUserId(int userId) {
         return JDBIConnect.get().withHandle(h -> {

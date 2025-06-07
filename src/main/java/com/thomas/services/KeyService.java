@@ -3,13 +3,21 @@ package com.thomas.services;
 import com.thomas.dao.PublicKeyDao;
 import com.thomas.dao.UserDao;
 import com.thomas.dao.model.PublicKeyEntity;
+import com.thomas.dao.model.User;
+import jakarta.servlet.ServletContext;
 
+import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -24,10 +32,11 @@ public class KeyService {
     UserDao udao;
     PublicKey pk;
     PrivateKey pv;
-    byte[] salt;
+    byte[] salt ;
 
     public KeyService() {
-        pbdao = new PublicKeyDao();
+        this.pbdao = new PublicKeyDao();
+        this.udao = new UserDao();
     }
 
     public byte[] genSalt() {
@@ -70,11 +79,75 @@ public class KeyService {
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePrivate(spec);
     }
+    public String keyToBase64(byte[] key) {
+        return Base64.getEncoder().encodeToString(key);
+    }
+
+    public SecretKey base64ToKeyAES(String base64Key) {
+        byte[] keyBytes = Base64.getDecoder().decode(base64Key);
+        return new SecretKeySpec(keyBytes, "AES");
+    }
+
+    public String encryptText(String plainText, byte[] keyBytes) throws Exception {
+        SecretKeySpec keySpec = new SecretKeySpec(keyBytes, "AES");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+
+        byte[] encrypted = cipher.doFinal(plainText.getBytes("UTF-8"));
+        return Base64.getEncoder().encodeToString(encrypted);
+    }
+
+    public File privateKeyFile(String privateKey, String salt,int userId , int count, ServletContext servletContext) {
+
+        String realPath = servletContext.getRealPath("/assets/key/");
+        System.out.println("Path để ghi file: " + realPath);
+        File file = new File(realPath, "privateKey" + userId +"V"+ count + ".txt");
 
 
-    public int insertPublicKeyService(int id, int userId, int keyVersion, String publicKey, LocalDate date, int is_Active) {
+        try {
+            file.getParentFile().mkdirs(); // Tạo thư mục nếu chưa có
 
-        return pbdao.insertPublicKey(id, userId, keyVersion, publicKey, date, is_Active);
+            // Sử dụng BufferedOutputStream để tăng hiệu năng
+            try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+                String content = salt + "\n" + privateKey;
+                bos.write(content.getBytes("UTF-8")); // Ghi bằng UTF-8
+                bos.flush(); // Đảm bảo ghi hết vào file
+            }
+
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public File publicKeyFile(String publicKey,int userId, int count,ServletContext servletContext) {
+        String realPath = servletContext.getRealPath("/assets/key/");
+        System.out.println("Path để ghi file: " + realPath);
+        File file = new File(realPath, "publicKey"+ userId +"V"+ count + ".txt");
+
+        File dir = new File(realPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+            bos.write(publicKey.getBytes(StandardCharsets.UTF_8));
+            bos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null; // hoặc throw exception nếu muốn
+        }
+
+        return file;
+    }
+
+    public int insertPublicKey(int userId, String publicKey, LocalDate date, int is_Active) {
+        return pbdao.insertPublicKey(userId, publicKey, date, is_Active);
+    }
+    public int updateIsActive(int userId, int  isActive) {
+        return pbdao.updateIsActive(userId,isActive);
     }
 
     public List<PublicKeyEntity> getAllPublicKeysByUserId(int userId) {
@@ -87,5 +160,12 @@ public class KeyService {
                 .filter(k -> k.getIsActive() == 1) // lọc theo isActive = 1
                 .max(Comparator.comparingInt(PublicKeyEntity::getKeyVersion)); // lấy keyVersion lớn nhất
     }
-
+    public User findUserByEmail(String email){
+        return udao.findUserEmail(email);
+    }
+    public int getKeyVersionActivated(int userId) {
+        return pbdao.getKeyVersionActivated(userId);
+    }
+    public static void main(String[] args) throws NoSuchAlgorithmException {
+    }
 }
