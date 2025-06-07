@@ -1,0 +1,215 @@
+/* genKeyPair.css */
+
+/* Container chính mở rộng hơn */
+.container {
+    max-width: 1000px;  /* Tăng chiều rộng tối đa */
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Card */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 30px 40px; /* tăng padding để không dồn nội dung */
+}
+
+/* Tiêu đề */
+h3.text-uppercase {
+    letter-spacing: 1.5px;
+    color: #2c3e50;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 30px;
+}
+
+/* Alert */
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+/* Hướng dẫn sử dụng */
+ol.text-dark {
+    padding-left: 1.6rem;
+    line-height: 1.7;
+    font-size: 1rem;
+    color: #343a40;
+    margin-bottom: 40px;
+}
+
+ol.text-dark li strong {
+    color: #212529;
+}
+
+/* Label */
+.form-label {
+    font-weight: 700;
+    color: #34495e;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Textarea */
+textarea.form-control {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1.5px solid #ced4da;
+    font-family: monospace;
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 140px;
+    width: 100%; /* cho textarea rộng hết vùng chứa */
+    transition: border-color 0.3s ease;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+}
+
+textarea.form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 5px rgba(25, 135, 84, 0.5);
+    outline: none;
+}
+
+/* Nút tải xuống Public Key */
+a.btn-outline-primary {
+    border-radius: 30px;
+    font-weight: 600;
+    padding: 0.6rem 1.8rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-bottom: 25px;
+    display: inline-block;
+}
+
+a.btn-outline-primary:hover {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Nút tải xuống Private Key */
+a.btn-outline-danger {
+    border-radius: 30px;
+    font-weight: 600;
+    padding: 0.6rem 1.8rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-bottom: 25px;
+    display: inline-block;
+}
+
+a.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Nút tải tool */
+a.btn-success.btn-lg {
+    border-radius: 40px;
+    font-weight: 700;
+    padding: 0.9rem 2.5rem;
+    font-size: 1.2rem;
+    box-shadow: 0 6px 12px rgba(25, 135, 84, 0.4);
+    transition: box-shadow 0.3s ease;
+    margin-bottom: 30px;
+    display: inline-block;
+}
+
+a.btn-success.btn-lg:hover {
+    box-shadow: 0 10px 20px rgba(25, 135, 84, 0.7);
+    text-decoration: none;
+}
+
+/* Nút quay về */
+a.btn-outline-dark {
+    border-radius: 30px;
+    font-weight: 600;
+    padding: 0.6rem 2rem;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: inline-block;
+}
+
+a.btn-outline-dark:hover {
+    background-color: #212529;
+    color: white;
+    text-decoration: none;
+}
+
+/* Căn giữa các nút và phần tử */
+.text-center {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .card {
+        padding: 20px 25px;
+    }
+
+    a.btn-outline-primary,
+    a.btn-outline-danger,
+    a.btn-outline-dark,
+    a.btn-success.btn-lg {
+        width: 100%;
+        text-align: center;
+        padding: 0.75rem 0;
+        font-size: 1.05rem;
+        margin-bottom: 0.8rem;
+    }
+    /* Giảm khoảng cách giữa số thứ tự và nội dung trong danh sách */
+    ol.text-dark {
+        list-style-position: inside; /* Đặt dấu số vào trong vùng nội dung */
+        padding-left: 0; /* Bỏ padding mặc định của ol */
+        margin-left: 0;  /* Bỏ margin mặc định */
+    }
+
+    ol.text-dark li {
+        margin-left: 0;  /* Bỏ khoảng cách thụt đầu dòng */
+        padding-left: 0;
+        text-indent: 0;  /* Không thụt dòng đầu */
+        display: flex;
+        gap: 6px; /* Khoảng cách nhỏ giữa số và nội dung */
+        list-style-type: none;
+    }
+    ol.text-dark>li {
+        list-style-type: none;
+    }
+    .tutorial li{
+        list-style-type: none;
+    }
+    .tutorial>li{
+        list-style-type: none;
+    }
+    /* Cố định lại dấu số */
+    ol.text-dark li::marker {
+        font-weight: bold;
+        font-size: 1rem;
+        margin-right: 2px;
+    }
+    .no-marker {
+        list-style-type: none;  /* ẩn số */
+        padding-left: 0;
+        margin-left: 0;
+    }
+
+    .no-marker > li {
+        counter-increment: none; /* tắt đếm số */
+        padding-left: 0;
+        margin-left: 0;
+    }
+    p{
+        font-size: 20px;
+    }
+
+}

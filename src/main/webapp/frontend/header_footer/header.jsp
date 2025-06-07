@@ -211,7 +211,7 @@
                         </c:if>
 
                         <li>
-                            <a class="dropdown-item" href="${pageContext.request.contextPath}/generateKey">Tạo khóa mới</a>
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/frontend/genKeyPairPage/verifyPassword.jsp">Tạo khóa mới</a>
                         </li>
 
                         <li>

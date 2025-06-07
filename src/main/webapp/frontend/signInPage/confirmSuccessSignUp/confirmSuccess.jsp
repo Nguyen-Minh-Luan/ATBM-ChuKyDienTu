@@ -69,7 +69,6 @@
                                     </div>
 
                                     <div class="d-flex flex-column align-items-center mt-4">
-                                        <p>Context Path: ${pageContext.request.contextPath}/downloadController?type=public&userId=${userId}&version=${keyVersion}</p>
                                         <a href="${pageContext.request.contextPath}/downloadController?type=public&userId=${userId}&version=1"
                                            class="btn btn-outline-primary btn-lg mb-2">
                                             📥 Tải Public Key
