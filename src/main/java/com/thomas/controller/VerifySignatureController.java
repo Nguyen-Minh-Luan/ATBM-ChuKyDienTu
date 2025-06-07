@@ -1,6 +1,9 @@
 package com.thomas.controller;
 
+import com.thomas.dao.model.PublicKeyEntity;
 import com.thomas.dao.model.User;
+import com.thomas.services.KeyService;
+import com.thomas.services.SignatureService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -10,6 +13,7 @@ import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
 import java.net.URLEncoder;
 import java.util.Base64;
+import java.util.Optional;
 
 @WebServlet(name = "verifySignatureController", value = "/verifySignature")
 public class VerifySignatureController extends HttpServlet {
@@ -33,7 +37,7 @@ public class VerifySignatureController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        KeyService keyService = new KeyService();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("auth");
 
@@ -43,15 +47,23 @@ public class VerifySignatureController extends HttpServlet {
 
         String message;
         boolean isVerified = false;
+        int keyVer = 1;
+        Optional<PublicKeyEntity> latestKeyOpt = keyService.getKeyActive(user.getId());
 
         try {
-            PublicKey publicKey = getPublicKeyFromBase64(USER_PUBLIC_KEY_BASE64);
-            isVerified = verifyText(hashValue, signatureBase64, publicKey);
+            if (latestKeyOpt.isPresent()) {
+                String publicKeyBase64 = latestKeyOpt.get().getPublicKey();
+                PublicKey publicKey = getPublicKeyFromBase64(publicKeyBase64);
+                keyVer = latestKeyOpt.get().getKeyVersion();
+                isVerified = verifyText(hashValue, signatureBase64, publicKey);
 
-            if (isVerified) {
-                message = "✅ Xác minh chữ ký thành công! Đơn hàng đang được xử lý.";
+                if (isVerified) {
+                    message = "✅ Xác minh chữ ký thành công! Đơn hàng đang được xử lý.";
+                } else {
+                    message = "❌ Xác minh chữ ký thất bại! Vui lòng kiểm tra lại thông tin.";
+                }
             } else {
-                message = "❌ Xác minh chữ ký thất bại! Vui lòng kiểm tra lại thông tin.";
+                message = "❌ Không tìm thấy public key hợp lệ của người dùng.";
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,6 +71,9 @@ public class VerifySignatureController extends HttpServlet {
         }
 
         if (isVerified) {
+            request.setAttribute("sign", signatureBase64);
+            request.setAttribute("keyVer", keyVer);
+            request.setAttribute("hash", hashValue);
             request.setAttribute("paymentMethod", request.getParameter("paymentMethod"));
             RequestDispatcher dispatcher = request.getRequestDispatcher("/frontend/cartPage/checkoutPage/autoOrderForward.jsp");
             dispatcher.forward(request, response);

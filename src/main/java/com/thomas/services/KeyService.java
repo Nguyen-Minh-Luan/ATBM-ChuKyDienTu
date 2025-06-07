@@ -102,9 +102,7 @@ public class KeyService {
 
 
     public File publicKeyFile(String publicKey, int count) {
-        String fileName = "src/main/webapp/assets/key/publicKey" + count + ".txt";
-        File file = new File(fileName);
-
+        File file = new File("src/main/webapp/assets/key/publicKey" + count + ".txt");
         try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
             bos.write(publicKey.getBytes(StandardCharsets.UTF_8));
             bos.flush();
@@ -119,7 +117,7 @@ public class KeyService {
     public int insertPublicKeyService(int userId, String publicKey, LocalDate date, int is_Active) {
         return pbdao.insertPublicKey(userId, publicKey, date, is_Active);
     }
-    public int updateIsActive(int userId, int isActive) {
+    public int updateIsActive(int userId, int  isActive) {
         return pbdao.updateIsActive(userId,isActive);
     }
 }
