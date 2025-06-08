@@ -98,11 +98,11 @@ public class KeyService {
         return Base64.getEncoder().encodeToString(encrypted);
     }
 
-    public File privateKeyFile(String privateKey, String salt,int userId , int count, ServletContext servletContext) {
+    public File privateKeyFile(String privateKey, String salt,int userId , int version, ServletContext servletContext) {
 
         String realPath = servletContext.getRealPath("/assets/key/");
         System.out.println("Path để ghi file: " + realPath);
-        File file = new File(realPath, "privateKey" + userId +"V"+ count + ".txt");
+        File file = new File(realPath, "privateKey" + userId +"V"+ version + ".txt");
 
 
         try {
@@ -123,10 +123,10 @@ public class KeyService {
     }
 
 
-    public File publicKeyFile(String publicKey,int userId, int count,ServletContext servletContext) {
+    public File publicKeyFile(String publicKey,int userId, int version,ServletContext servletContext) {
         String realPath = servletContext.getRealPath("/assets/key/");
         System.out.println("Path để ghi file: " + realPath);
-        File file = new File(realPath, "publicKey"+ userId +"V"+ count + ".txt");
+        File file = new File(realPath, "publicKey"+ userId +"V"+ version + ".txt");
 
         File dir = new File(realPath);
         if (!dir.exists()) {

@@ -5,6 +5,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @WebServlet(name = "downloadController", value = "/downloadController")
 public class downloadController extends HttpServlet {
@@ -68,6 +70,16 @@ public class downloadController extends HttpServlet {
             while ((bytesRead = bis.read(buffer)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
+        }
+        if(type.equals("public")) {
+            String realPath = request.getServletContext().getRealPath("/assets/key/");
+            String publicKeyPath = realPath + "publicKey"+ userIdStr +"V"+ versionStr + ".txt";
+            Files.delete(Path.of(publicKeyPath));
+        }
+        if(type.equals("private")) {
+            String realPath = request.getServletContext().getRealPath("/assets/key/");
+            String privateKeyPath = realPath + "privateKey"+ userIdStr +"V"+ versionStr + ".txt";
+            Files.delete(Path.of(privateKeyPath));
         }
     }
 }
