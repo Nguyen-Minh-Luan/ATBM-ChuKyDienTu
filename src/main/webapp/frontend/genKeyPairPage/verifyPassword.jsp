@@ -25,13 +25,13 @@
     <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
         <h4 class="text-center mb-3">🔐 Xác thực người dùng</h4>
 
-        <form action="verifyPassword.jsp" method="post">
+        <form action="/verifyPassword" method="post">
             <div class="mb-3">
                 <label for="password" class="form-label">Mật khẩu:</label>
                 <input type="password" id="password" name="password" class="form-control" required>
             </div>
 
-            <c:if test="${ param.error}">
+            <c:if test="${param.error}">
                 <div class="alert alert-danger p-2 text-center" role="alert">
                     ❌ Mật khẩu không đúng. Vui lòng thử lại.
                 </div>
