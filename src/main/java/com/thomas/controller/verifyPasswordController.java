@@ -30,10 +30,13 @@ public class verifyPasswordController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("auth");
+        String userPassword = keyService.getPasswordById(user.getId());
         String password = request.getParameter("password");
-        if(md5Service.hashPassword(password).equals(user.getPassword())){
+
+        if(md5Service.hashPassword(password).equals(userPassword)){
 
             KeyPair keyPair = null;
+
             try {
                 keyPair = keyService.genKeyPair();
                 PublicKey pk = keyPair.getPublic();
@@ -55,6 +58,8 @@ public class verifyPasswordController extends HttpServlet {
                 // 6. Ghi ra file public/private
                 File pkFile = keyService.publicKeyFile(keyService.keyToBase64(pk.getEncoded()),user.getId(),keyVersion,request.getServletContext());
                 File pvFile = keyService.privateKeyFile(encryptedPV,keyService.keyToBase64(salt), user.getId(),keyVersion,request.getServletContext());
+                request.setAttribute("userId",user.getId());
+                request.setAttribute("keyVersion",keyVersion);
                 request.getRequestDispatcher("/frontend/genKeyPairPage/genKeyPairPage.jsp").forward(request, response);
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);

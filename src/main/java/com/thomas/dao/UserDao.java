@@ -196,5 +196,14 @@ public class UserDao {
 
         return userList;
     }
+    public String getPasswordById(int userId) {
+        return JDBIConnect.get().withHandle(h ->
+                h.createQuery("select password from users where id = :userId")
+                        .bind("userId", userId)
+                        .mapTo(String.class)
+                        .findFirst()
+                        .orElse(null)
+        );
+    }
 
 }
