@@ -111,6 +111,10 @@
                             href="${pageContext.request.contextPath}/admin/table/collections"
                     >Bộ sưu tập</a
                     >
+                    <a class="collapse-item"
+                       href="${pageContext.request.contextPath}/admin/table/orders"
+                    >Check chữ ký điện tử</a
+                    >
                 </div>
             </div>
         </li>
