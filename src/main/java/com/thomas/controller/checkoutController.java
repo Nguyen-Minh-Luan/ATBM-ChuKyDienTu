@@ -18,6 +18,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+
 @WebServlet(name = "checkoutController", value = "/checkout")
 public class checkoutController extends HttpServlet {
     UploadUserService uploadUserService = new UploadUserService();
@@ -39,11 +40,11 @@ public class checkoutController extends HttpServlet {
         double totalPrice = 0;
         for (CartItem cartItem : cart.values()) {
             totalPrice += cartItem.getQuantity() * cartItem.getPrice();
-            shipmentPrice += cartItem.getQuantity() * 15.000;
+//            shipmentPrice += cartItem.getQuantity() * 15.000;
         }
-        double discountRate = cp == null ? 0 : cp.getDiscountRate();
-        double discountAmount = totalPrice * (discountRate / 100);
-        double grandTotal = totalPrice + shipmentPrice + discountAmount;
+//        double discountRate = cp == null ? 0 : cp.getDiscountRate();
+//        double discountAmount = totalPrice * (discountRate / 100);
+//        double grandTotal = totalPrice + shipmentPrice + discountAmount;
         List<Address> userAddresses = uploadAddressService.getAddressList(user.getId());
 
         List<PaymentMethod> paymentMethods = uploadPaymentMethod.getPaymentMethods();
@@ -55,12 +56,12 @@ public class checkoutController extends HttpServlet {
             request.setAttribute("userAddresses", userAddresses);
         }
         String formattedShipmentPrice = formatter.format(shipmentPrice).replace(",", ".");
-        String formattedGrandTotal = formatter.format(grandTotal).replace(",", ".");
+//        String formattedGrandTotal = formatter.format(grandTotal).replace(",", ".");
         String formattedTotalPrice = formatter.format(totalPrice).replace(",", ".");
         request.setAttribute("paymentMethods", paymentMethods);
         request.setAttribute("cartSize", cartSize);
         request.setAttribute("shipmentPrice", formattedShipmentPrice);
-        request.setAttribute("grandTotal", formattedGrandTotal);
+//        request.setAttribute("grandTotal", formattedGrandTotal);
         request.setAttribute("totalPrice", formattedTotalPrice);
 
         String errorMsg = request.getParameter("error");
@@ -69,24 +70,30 @@ public class checkoutController extends HttpServlet {
         }
 
         StringBuilder sb = new StringBuilder();
-        for (CartItem cartItem : cart.values()) {
-            sb.append(cartItem.getBelt().getId())
-                    .append("|")
-                    .append(cartItem.getQuantity())
-                    .append("|")
-                    .append(cartItem.getPrice())
-                    .append(";");
+        if (user != null) {
+            sb.append(user.getId()).append("|");
         }
-        sb.append("total=").append(totalPrice)
-                .append("|shipment=").append(shipmentPrice)
-                .append("|discount=").append(discountAmount)
-                .append("|grandTotal=").append(grandTotal);
-        String orderData = sb.toString();
+        String paymentMethodIdStr = request.getParameter("paymentMethodId");
 
+        sb.append("orderDate=").append(java.time.LocalDate.now().toString()).append("|");
+        sb.append("totalPrice=").append(totalPrice).append("|");
+        sb.append("shipmentPrice=").append(shipmentPrice).append("|");
+//        sb.append("discountAmount=").append(discountAmount).append("|");
+//        sb.append("grandTotal=").append(grandTotal).append("|");
+
+// Lặp qua cart để thêm chi tiết từng món
+        for (CartItem cartItem : cart.values()) {
+            sb.append(cartItem.getBelt().getName()).append(",")
+                    .append(cartItem.getQuantity()).append(",")
+                    .append(cartItem.getPrice()).append(";");
+        }
+
+        String orderString = sb.toString();
+        System.out.println(orderString);
         String hashValue = "";
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(orderData.getBytes(StandardCharsets.UTF_8));
+            byte[] hash = digest.digest(orderString.getBytes(StandardCharsets.UTF_8));
             hashValue = Base64.getEncoder().encodeToString(hash);
         } catch (Exception e) {
             e.printStackTrace();

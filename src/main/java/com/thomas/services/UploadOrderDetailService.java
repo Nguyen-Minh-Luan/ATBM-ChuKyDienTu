@@ -53,4 +53,7 @@ public class UploadOrderDetailService {
     public OrderDetails findOrderDetailById(int orderItemId) {
         return orderDetailsDao.findOrderDetailById(orderItemId);
     }
+    public String getBeltName(int odId) {
+        return orderDetailsDao.getBeltName(odId);
+    }
 }

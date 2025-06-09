@@ -233,6 +233,11 @@
                         >
                             <strong>Vận chuyển: </strong>nhận hàng từ ${order.shippingDate}
                         </p>
+                        <!-- Nút lấy hash value -->
+<%--                        <form method="post" action="${pageContext.request.contextPath}/GetOrderHash" style="display:inline;">--%>
+<%--                            <input type="hidden" name="orderId" value="${order.id}" />--%>
+<%--                            <button type="submit" class="btn btn-dark fs-6 custom__btn">Get Hash Value</button>--%>
+<%--                        </form>--%>
                         <button
                                 class="btn btn-dark fs-6 custom__btn"
                                 data-bs-toggle="modal"
@@ -241,6 +246,10 @@
                             Gửi yêu cầu hủy đơn hàng
                         </button>
                     </div>
+                    <button type="button" class="btn btn-dark fs-6 custom__btn" onclick="checkSelectedOrderHash(${order.id})" >Check Hash Đơn Hàng</button>
+                    <p>Hash của đơn hàng được chọn: <span id="orderHashResult${order.id}">Chưa lấy hash</span></p>
+                    <input type="hidden" id="selectedOrderId" value="${order.id}" />
+
                 </div>
 
             </c:forEach>
@@ -249,6 +258,30 @@
 </div>
 
 <jsp:include page="/frontend/header_footer/footer.jsp"/>
+<script>
+    function checkSelectedOrderHash(orderId) {
+        console.log(orderId)
+        fetch('/GetOrderHash?orderId=' + orderId)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi server khi lấy hash');
+                }
+                return response.text();
+            })
+            .then(data => {
+                const el = document.getElementById('orderHashResult' + orderId);
+                if (el) {
+                    el.textContent = data;
+                } else {
+                    console.error("Không tìm thấy phần tử hiển thị hash cho orderId: " + orderId);
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi lấy hash:', error);
+            });
+    }
+</script>
+
 
 </body>
 </html>
