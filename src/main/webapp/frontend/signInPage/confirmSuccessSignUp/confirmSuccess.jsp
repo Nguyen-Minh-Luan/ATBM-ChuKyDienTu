@@ -54,7 +54,7 @@
                                             </li>
                                             <li><strong>Bước 3:</strong> Tải và cài đặt công cụ hỗ trợ ở đường link phía dưới.
                                             </li>
-                                            <li><strong>Bước 4:</strong> Mở tool chọn Tab "Lấy Private Key".
+                                            <li><strong>Bước 4:</strong> Mở tool, chọn tab <strong>"Lấy Private Key"</strong>.
                                             </li>
                                             <li><strong>Bước 5:</strong> Thêm file private key vừa tải về vào ô "Nhập Private Key" và nhập mật khẩu người dùng vào ô "Nhập mật khẩu" .
                                             </li>
@@ -84,11 +84,11 @@
                                             🛠️ Tải công cụ ký/giải mã
                                         </a>
                                     </div>
-                                    <div>
-                                    <a href="${pageContext.request.contextPath}/"
-                                       class="btn border-dark btn-lg px-5 text-dark"
-                                    >Quay về trang chủ
-                                    </a>
+                                    <div class="mt-5">
+                                        <a href="${pageContext.request.contextPath}/"
+                                           class="btn border-dark btn-lg px-5 text-dark">
+                                            Quay về trang chủ
+                                        </a>
                                     </div>
                                 </c:when>
                                 <c:when test="${messageRedirect !=null}">
