@@ -1946,7 +1946,7 @@ INSERT INTO `users` VALUES (1, 'erterter Huynh Minh Thang', 'huynhminhthang246@g
 INSERT INTO `users` VALUES (4, 'huynhminhthang247@gmail.com', 'huynhminhthang247@gmail.com', '2012-02-22 00:00:00', '202cb962ac59075b964b07152d234b70', NULL, '2025-01-08 00:00:00', 0, 'M', 12312321, 0, NULL, 1);
 INSERT INTO `users` VALUES (5, 'huynhminhthang248@gmail.com', 'huynhminhthang248@gmail.com', '2025-02-05 00:00:00', '202cb962ac59075b964b07152d234b70', NULL, '2025-01-08 00:00:00', 0, 'M', 356176054, 1, NULL, 1);
 INSERT INTO `users` VALUES (6, '546456456456', '23423423@gmail.com', '2025-01-02 00:00:00', 'd41d8cd98f00b204e9800998ecf8427e', NULL, '2025-01-08 00:00:00', 0, 'F', 1233213, 0, NULL, 1);
-INSERT INTO `users` VALUES (7, 'huynhminhthang246@gmail.com', '123@gmail.com', '2024-09-10 00:00:00', '202cb962ac59075b964b07152d234b70', NULL, '2025-01-08 00:00:00', 0, 'F', 123123, 0, NULL, 1);
+INSERT INTO `users` VALUES (7, 'huynhminhthang246@gmail.com', '123@gmail.com', '2024-09-10 00:00:00', '202cb962ac59075b964b07152d234b70', NULL, '2025-01-08 00:00:00', 0, 'F', 123123, 1, NULL, 1);
 INSERT INTO `users` VALUES (8, 'rgdfgdfg', '456@gmail.com', '2025-01-05 00:00:00', '202cb962ac59075b964b07152d234b70', NULL, '2025-01-08 00:00:00', 0, 'M', 32423, 1, NULL, 1);
 INSERT INTO `users` VALUES (9, 'mbnmbnmbnmbnmbnm', 'asd@gmail.com', '2025-01-06 00:00:00', '202cb962ac59075b964b07152d234b70', NULL, '2025-01-08 00:00:00', 0, 'M', 546456, 0, NULL, 1);
 INSERT INTO `users` VALUES (10, 'sdfsfsdfsdf', 'qwe@gmail.com', '2023-06-27 00:00:00', '202cb962ac59075b964b07152d234b70', NULL, '2025-01-08 00:00:00', 0, 'F', 21313, 1, NULL, 1);
