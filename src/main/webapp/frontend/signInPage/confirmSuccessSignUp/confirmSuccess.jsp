@@ -84,10 +84,12 @@
                                             🛠️ Tải công cụ ký/giải mã
                                         </a>
                                     </div>
+                                    <div>
                                     <a href="${pageContext.request.contextPath}/"
                                        class="btn border-dark btn-lg px-5 text-dark"
                                     >Quay về trang chủ
                                     </a>
+                                    </div>
                                 </c:when>
                                 <c:when test="${messageRedirect !=null}">
                                     <h2 class="fw-bold mb-2 text-uppercase">Đơn hàng của bạn đã được tiếp nhận</h2>

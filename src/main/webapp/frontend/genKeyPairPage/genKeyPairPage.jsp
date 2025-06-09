@@ -52,7 +52,7 @@
         <!-- Hiển thị Public Key -->
         <div class="mb-4">
           <label class="form-label fw-bold">🔓 Public Key</label>
-          <a href="${pageContext.request.contextPath}/downloadController?type=public&userId=${userId}&version=1" class="btn btn-outline-primary mt-2">
+          <a href="${pageContext.request.contextPath}/downloadController?type=public&userId=${userId}&version=${keyVersion}" class="btn btn-outline-primary mt-2">
             📥 Tải Public Key
           </a>
         </div>
@@ -60,7 +60,7 @@
         <!-- Hiển thị Private Key -->
         <div class="mb-4">
           <label class="form-label fw-bold">🔐 Private Key (đã mã hóa)</label>
-          <a href="${pageContext.request.contextPath}/downloadController?type=private&userId=${userId}&version=1" class="btn btn-outline-danger mt-2">
+          <a href="${pageContext.request.contextPath}/downloadController?type=private&userId=${userId}&version=${keyVersion}" class="btn btn-outline-danger mt-2">
             📥 Tải Private Key
           </a>
         </div>

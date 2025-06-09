@@ -166,6 +166,7 @@ public class KeyService {
     public int getKeyVersionActivated(int userId) {
         return pbdao.getKeyVersionActivated(userId);
     }
+    public String getPasswordById(int userId) {return udao.getPasswordById(userId);}
     public static void main(String[] args) throws NoSuchAlgorithmException {
     }
 }

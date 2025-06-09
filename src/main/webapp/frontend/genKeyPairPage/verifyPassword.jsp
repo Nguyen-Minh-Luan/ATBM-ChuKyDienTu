@@ -1,17 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-    String inputPassword = request.getParameter("password");
-    String correctPassword = "123456"; // ✅ Sau này nên hash và kiểm tra ở backend (Servlet hoặc DB)
 
-    if (inputPassword != null) {
-        if (inputPassword.equals(correctPassword)) {
-            response.sendRedirect("genKeyPairPage.jsp"); // 👈 Trang cấp lại khóa
-            return;
-        } else {
-            request.setAttribute("error", "1");
-        }
-    }
-%>
 
 <!DOCTYPE html>
 <html lang="vi">
