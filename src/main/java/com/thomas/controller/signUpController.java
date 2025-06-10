@@ -78,7 +78,7 @@ public class signUpController extends HttpServlet {
         MimeMessage message = new MimeMessage(session);
         try {
             token = UUID.randomUUID().toString();
-            String resetLink = "http://localhost:8080/confirmSuccess?token=" + token +"&userId="+user.getId()+"&keyVersion=1";
+            String resetLink = "http://localhost:8080/confirmSuccess?token=" + token;
             String messageContent = "Vui lòng nhấn vào đường dẫn này để kích hoạt tài khoản.\n" +
                     resetLink + "\n" +
                     "Nếu bạn không yêu cầu điều này, vui lòng bỏ qua email này.";

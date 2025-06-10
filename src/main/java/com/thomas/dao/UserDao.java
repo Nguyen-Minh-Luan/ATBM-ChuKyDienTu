@@ -206,4 +206,11 @@ public class UserDao {
         );
     }
 
+    public User getUserByToken(String token) {
+        return JDBIConnect.get().withHandle(h -> {
+            return h.createQuery("select * from users where token = :token")
+                    .bind("token", token).mapToBean(User.class).findFirst().orElse(null);
+        });
+    }
+
 }

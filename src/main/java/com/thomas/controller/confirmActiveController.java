@@ -1,5 +1,7 @@
 package com.thomas.controller;
 
+import com.thomas.dao.model.User;
+import com.thomas.services.KeyService;
 import com.thomas.services.TokenService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -14,16 +16,16 @@ public class confirmActiveController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String message = request.getParameter("messageRedirect");
         TokenService tokenService = new TokenService();
+        KeyService keyService = new KeyService();
         String token = request.getParameter("token");
         boolean isValid = tokenService.verifyToken(token);
         boolean active = tokenService.activeUser(token);
+        User user = keyService.getUserByToken(token);
         if (isValid && active) {
             request.setAttribute("active", 1);
             request.setAttribute("messageRedirect", "Liên kết kích hoặc không hợp lệ");
-            String keyVersion = request.getParameter("keyVersion");
-            String userId = (String) request.getParameter("userId");
-            request.setAttribute("keyVersion",keyVersion);
-            request.setAttribute("userId", userId);
+            request.setAttribute("keyVersion",keyService.getKeyVersionActivated(user.getId()));
+            request.setAttribute("userId", user.getId());
         }
         if (message != null) {
             request.setAttribute("messageRedirect", message);
