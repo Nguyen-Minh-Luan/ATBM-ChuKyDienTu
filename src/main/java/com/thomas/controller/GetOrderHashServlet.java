@@ -34,30 +34,24 @@ public class GetOrderHashServlet extends HttpServlet {
                 return;
             }
 
-            double totalPrice = 0;
-            double shipmentPrice = 0;
             List<OrderDetails> orderDetails = uploadOrderDetailService.getAllOrderDetails(orderId);
-            if (orderDetails != null) {
-                for (OrderDetails detail : orderDetails) {
-                    totalPrice += detail.getQuantity() * detail.getPrice();
-                }
-            }
-
-            System.out.println(totalPrice);
-
             StringBuilder sb = new StringBuilder();
+            sb.append(orderId);
             if (order.getUserId() != 0) {
                 sb.append(order.getUserId()).append("|");
             }
+            sb.append(1);
+            sb.append(order.getAddressesId());
             sb.append("orderDate=").append(order.getOrderDate()).append("|")
-                    .append("totalPrice=").append(totalPrice).append("|")
-                    .append("shipmentPrice=").append(shipmentPrice).append("|");
+                    .append("grandTotal=").append(order.getOrderTotal()).append("|");
 
             assert orderDetails != null;
             for (OrderDetails detail : orderDetails) {
-                sb.append(uploadOrderDetailService.getBeltName(detail.getId())).append(",")
-                        .append(detail.getQuantity()).append(",")
-                        .append(detail.getPrice()).append(";");
+                sb.append(detail.getId());
+                sb.append(orderId);
+                sb.append(detail.getPrice()).append("|");
+                sb.append(detail.getBeltId()).append("|");
+                sb.append(detail.getQuantity()).append("|");
             }
             System.out.println("get: " + sb.toString());
             String hash = "";

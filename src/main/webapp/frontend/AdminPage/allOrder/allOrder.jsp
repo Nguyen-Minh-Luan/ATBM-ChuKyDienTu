@@ -760,23 +760,21 @@
     document.querySelectorAll('.btn-check-signature').forEach(button => {
         button.addEventListener('click', function () {
             const orderId = this.dataset.orderId;
-            fetch(`${window.location.origin}/admin/table/check-digital-signatures?orderId=`+orderId)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Không thể xác thực chữ ký");
+            fetch(`${window.location.origin}/api/check-digital-signatures?orderId=` + orderId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.verified) {
+                        alert(`✅ Đơn hàng` +orderId+ `đã được xác thực chữ ký thành công.`);
+                    } else {
+                        alert(`❌ Đơn hàng ` +orderId+ ` không hợp lệ hoặc chữ ký không đúng.`);
                     }
-                    return response.text();
-                })
-                .then(hash => {
-                    alert("Hash của đơn hàng là:\n" + hash + "\nHệ thống đã kiểm tra thành công.");
-                    // Hoặc kiểm tra trực tiếp tại đây nếu có signature:
-                    // Gọi AJAX POST đến controller để gọi checkDigitalSignature(...)
                 })
                 .catch(error => {
-                    alert("Lỗi khi xác thực chữ ký: " + error.message);
+                    alert("Lỗi xác thực chữ ký: " + error.message);
                 });
         });
     });
+
 </script>
 
 </body>
