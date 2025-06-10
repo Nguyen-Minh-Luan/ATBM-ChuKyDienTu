@@ -22,53 +22,57 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.List;
 
-@WebServlet(name = "checkDigitalSignaturesAdminController", value = "/admin/table/check-digital-signatures")
+@WebServlet(name = "checkDigitalSignatureApi", value = "/api/check-digital-signatures")
 public class CheckDigitalSignaturesAdminController extends HttpServlet {
-    UploadOrderService uploadOrderService = new UploadOrderService();
-    UploadOrderDetailService uploadOrderDetailService = new UploadOrderDetailService();
+    private final UploadOrderService uploadOrderService = new UploadOrderService();
+    private final UploadOrderDetailService uploadOrderDetailService = new UploadOrderDetailService();
     private final SignatureService digitalSignatureService = new SignatureService();
     private final KeyService keyService = new KeyService();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("auth");
-        int userId = user.getId();
-        boolean verifyStoring = false;
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
         try {
-            int orderId = Integer.parseInt(request.getParameter("orderId"));
-            System.out.println(orderId);
-            Order order = uploadOrderService.getOrderById(orderId);
-            if (order == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
+            String orderIdParam = request.getParameter("orderId");
+            System.out.println("oid:" +  orderIdParam);
+            if (orderIdParam == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"message\": \"Thiếu orderId\"}");
                 return;
             }
 
-            double totalPrice = 0;
-            double shipmentPrice = 0;
-            List<OrderDetails> orderDetails = uploadOrderDetailService.getAllOrderDetails(orderId);
-            if (orderDetails != null) {
-                for (OrderDetails detail : orderDetails) {
-                    totalPrice += detail.getQuantity() * detail.getPrice();
-                }
+            int orderId = Integer.parseInt(orderIdParam);
+
+            Order order = uploadOrderService.getOrderById(orderId);
+            if (order == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter().write("{\"message\": \"Không tìm thấy đơn hàng\"}");
+                return;
             }
 
+            List<OrderDetails> orderDetails = uploadOrderDetailService.getAllOrderDetails(orderId);
+
             StringBuilder sb = new StringBuilder();
+            sb.append(orderId);
             if (order.getUserId() != 0) {
                 sb.append(order.getUserId()).append("|");
             }
+            sb.append(1);
+            sb.append(order.getAddressesId());
             sb.append("orderDate=").append(order.getOrderDate()).append("|")
-                    .append("totalPrice=").append(totalPrice).append("|")
-                    .append("shipmentPrice=").append(shipmentPrice).append("|");
+                    .append("grandTotal=").append(order.getOrderTotal()).append("|");
 
+            assert orderDetails != null;
             for (OrderDetails detail : orderDetails) {
-                sb.append(uploadOrderDetailService.getBeltName(detail.getId())).append(",")
-                        .append(detail.getQuantity()).append(",")
-                        .append(detail.getPrice()).append(";");
+                sb.append(detail.getId());
+                sb.append(orderId);
+                sb.append(detail.getPrice()).append("|");
+                sb.append(detail.getBeltId()).append("|");
+                sb.append(detail.getQuantity()).append("|");
             }
-
-            String hash;
+            String hash= "";
             try {
                 MessageDigest digest = MessageDigest.getInstance("SHA-256");
                 byte[] hashBytes = digest.digest(sb.toString().getBytes(StandardCharsets.UTF_8));
@@ -78,54 +82,43 @@ public class CheckDigitalSignaturesAdminController extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Hashing error");
                 return;
             }
-            System.out.println(hash);
-            verifyStoring = checkDigitalSignature(orderId, userId, hash);
+            System.out.println("hash: "+hash);
+            boolean verified = checkDigitalSignature(orderId, order.getUserId(), hash);
+            System.out.println("verified: "+verified);
+            String json = String.format("{\"orderId\": %d, \"verified\": %s}", orderId, verified);
+            response.getWriter().write(json);
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("{\"message\": \"orderId không hợp lệ\"}");
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error: " + e.getMessage());
+            e.printStackTrace();  // Xem kỹ trong log
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"message\": \"Lỗi máy chủ nội bộ\"}");
         }
-        request.setAttribute("verifyStoring", verifyStoring);
-
-        request.getRequestDispatcher("/frontend/AdminPage/checkDigitalSignatures/allCheckDigitalSignatures.jsp")
-                .forward(request, response);
     }
 
-    public boolean checkDigitalSignature(int id, int userId, String invoiceCode) {
+    public boolean checkDigitalSignature(int id, int userId, String hash) {
         try {
             SignatureEntity signatureRecord = digitalSignatureService.getSignatureByOrder(id);
-            if (signatureRecord == null) {
-                System.out.println("Không tìm thấy chữ ký số cho invoiceCode = " + invoiceCode);
-                return false;
-            }
+            if (signatureRecord == null) return false;
 
             int keyVersion = signatureRecord.getKeyVersion();
-            System.out.println("userId: " + userId + ", version: " + keyVersion);
-
             PublicKeyEntity publicKeyRecord = keyService.getPublicKeyByVersionAndUserId(userId, keyVersion);
-            if (publicKeyRecord == null) {
-                System.out.println("Không tìm thấy public key cho version = " + keyVersion);
-                return false;
-            }
+            if (publicKeyRecord == null) return false;
 
             byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyRecord.getPublicKey());
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             PublicKey publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(publicKeyBytes));
 
-            System.out.println(signatureRecord.getSignature());
-            Signature signature = Signature.getInstance("SHA256withRSA");
+            Signature signature = Signature.getInstance("SHA512withRSA");
             signature.initVerify(publicKey);
-
-            // Giả định trường raw data lưu thông tin gốc đã được ký
-            String originalData = signatureRecord.getSignature();
-            signature.update(originalData.getBytes(StandardCharsets.UTF_8));
-
+            signature.update(hash.getBytes(StandardCharsets.UTF_8));
+            System.out.println("userId: "+userId + "keyVer: "+keyVersion);
+            System.out.println("sig: " + signatureRecord.getSignature());
             byte[] signatureBytes = Base64.getDecoder().decode(signatureRecord.getSignature());
-            boolean verified = signature.verify(signatureBytes);
-            System.out.println("Kết quả xác thực chữ ký: " + verified);
-            return verified;
-
+            return signature.verify(signatureBytes);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();  // Cực kỳ quan trọng để debug
             return false;
         }
     }

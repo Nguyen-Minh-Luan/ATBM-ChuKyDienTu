@@ -73,4 +73,14 @@ public class OrderDetailsDao {
             return h.createQuery(sql).bind("orderItemId", orderItemId).mapToBean(OrderDetails.class).findOne().orElse(null);
         });
     }
+    public OrderDetails findLatestOrderDetail() {
+        return JDBIConnect.get().withHandle(h -> {
+            String sql = "SELECT * FROM orderDetails ORDER BY id DESC LIMIT 1";
+            return h.createQuery(sql)
+                    .mapToBean(OrderDetails.class)
+                    .findOne()
+                    .orElse(null);
+        });
+    }
+
 }

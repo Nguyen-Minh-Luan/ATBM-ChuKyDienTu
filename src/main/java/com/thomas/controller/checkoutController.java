@@ -1,9 +1,7 @@
 package com.thomas.controller;
 
 import com.thomas.dao.model.*;
-import com.thomas.services.UploadAddressService;
-import com.thomas.services.UploadPaymentMethod;
-import com.thomas.services.UploadUserService;
+import com.thomas.services.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -21,6 +19,8 @@ import java.util.Map;
 
 @WebServlet(name = "checkoutController", value = "/checkout")
 public class checkoutController extends HttpServlet {
+    UploadOrderService orderService = new UploadOrderService();
+    UploadOrderDetailService orderDetailService = new UploadOrderDetailService();
     UploadUserService uploadUserService = new UploadUserService();
     UploadAddressService uploadAddressService = new UploadAddressService();
     UploadPaymentMethod uploadPaymentMethod = new UploadPaymentMethod();
@@ -42,9 +42,9 @@ public class checkoutController extends HttpServlet {
             totalPrice += cartItem.getQuantity() * cartItem.getPrice();
 //            shipmentPrice += cartItem.getQuantity() * 15.000;
         }
-//        double discountRate = cp == null ? 0 : cp.getDiscountRate();
-//        double discountAmount = totalPrice * (discountRate / 100);
-//        double grandTotal = totalPrice + shipmentPrice + discountAmount;
+        double discountRate = cp == null ? 0 : cp.getDiscountRate();
+        double discountAmount = totalPrice * (discountRate / 100);
+        double grandTotal = totalPrice;
         List<Address> userAddresses = uploadAddressService.getAddressList(user.getId());
 
         List<PaymentMethod> paymentMethods = uploadPaymentMethod.getPaymentMethods();
@@ -56,12 +56,12 @@ public class checkoutController extends HttpServlet {
             request.setAttribute("userAddresses", userAddresses);
         }
         String formattedShipmentPrice = formatter.format(shipmentPrice).replace(",", ".");
-//        String formattedGrandTotal = formatter.format(grandTotal).replace(",", ".");
+        String formattedGrandTotal = formatter.format(grandTotal).replace(",", ".");
         String formattedTotalPrice = formatter.format(totalPrice).replace(",", ".");
         request.setAttribute("paymentMethods", paymentMethods);
         request.setAttribute("cartSize", cartSize);
         request.setAttribute("shipmentPrice", formattedShipmentPrice);
-//        request.setAttribute("grandTotal", formattedGrandTotal);
+        request.setAttribute("grandTotal", formattedGrandTotal);
         request.setAttribute("totalPrice", formattedTotalPrice);
 
         String errorMsg = request.getParameter("error");
@@ -70,23 +70,29 @@ public class checkoutController extends HttpServlet {
         }
 
         StringBuilder sb = new StringBuilder();
+        int oid = orderService.getLatestOrder().getId()+ 1;
+        sb.append(oid);
         if (user != null) {
             sb.append(user.getId()).append("|");
         }
         String paymentMethodIdStr = request.getParameter("paymentMethodId");
+        sb.append(1);
+        sb.append(uploadAddressService.getAddressByUserId(user.getId()).getId());
 
         sb.append("orderDate=").append(java.time.LocalDate.now().toString()).append("|");
-        sb.append("totalPrice=").append(totalPrice).append("|");
-        sb.append("shipmentPrice=").append(shipmentPrice).append("|");
-//        sb.append("discountAmount=").append(discountAmount).append("|");
-//        sb.append("grandTotal=").append(grandTotal).append("|");
+        sb.append("grandTotal=").append(grandTotal).append("|");
 
 // Lặp qua cart để thêm chi tiết từng món
+        int count = 1;
         for (CartItem cartItem : cart.values()) {
-            sb.append(cartItem.getBelt().getName()).append(",")
-                    .append(cartItem.getQuantity()).append(",")
-                    .append(cartItem.getPrice()).append(";");
+            sb.append(orderDetailService.findLatestOrderDetail().getId() + count);
+            sb.append(oid);
+            sb.append(cartItem.getPrice()).append("|");
+            sb.append(cartItem.getBelt().getId()).append("|");
+            sb.append(cartItem.getQuantity()).append("|");
+            count++;
         }
+        System.out.println(sb.toString());
 
         String orderString = sb.toString();
         System.out.println(orderString);

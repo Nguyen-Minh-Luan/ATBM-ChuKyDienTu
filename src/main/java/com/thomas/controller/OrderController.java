@@ -48,7 +48,7 @@ public class OrderController extends HttpServlet {
             }
             double discountRate = cp == null ? 0 : cp.getDiscountRate();
             double discountAmount = totalPrice * (discountRate / 100);
-            double grandTotal = totalPrice + shippingCost + discountAmount;
+            double grandTotal = totalPrice;
             if (uploadOrderService.createOrder(userId, paymentMethodId, address.getId(), LocalDate.now(), grandTotal, "Đang xử lý", 0)) {
                 Order order = uploadOrderService.getLatestOrder();
                 for (CartItem cartItem : cart.values()) {
