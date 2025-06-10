@@ -3,6 +3,12 @@ package com.thomas.services;
 import com.thomas.dao.SignatureDao;
 import com.thomas.dao.model.SignatureEntity;
 
+import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.List;
 
 public class SignatureService {

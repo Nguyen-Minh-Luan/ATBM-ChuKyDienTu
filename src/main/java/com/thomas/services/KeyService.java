@@ -142,6 +142,9 @@ public class KeyService {
 
         return file;
     }
+    public PublicKeyEntity getPublicKeyByVersionAndUserId(int userId, int keyVersion) {
+        return pbdao.getPublicKeyByVersionAndUserId(userId, keyVersion);
+    }
 
     public int insertPublicKey(int userId, String publicKey, LocalDate date, int is_Active) {
         return pbdao.insertPublicKey(userId, publicKey, date, is_Active);
@@ -170,4 +173,5 @@ public class KeyService {
     public User getUserByToken(String token){return udao.getUserByToken(token);}
     public static void main(String[] args) throws NoSuchAlgorithmException {
     }
+
 }
