@@ -39,6 +39,26 @@ public class PublicKeyDao {
                     .orElse(0);
         });
     }
+    public PublicKeyEntity getPublicKeyByVersionAndUserId(int userId, int keyVersion) {
+        return JDBIConnect.get().withHandle(h -> {
+            String sql = "SELECT * FROM public_keys WHERE user_id = :userId AND key_version = :keyVersion LIMIT 1";
+            return h.createQuery(sql)
+                    .bind("userId", userId)
+                    .bind("keyVersion", keyVersion)
+                    .map((rs, ctx) -> {
+                        PublicKeyEntity key = new PublicKeyEntity();
+                        key.setId(rs.getInt("id"));
+                        key.setUserId(rs.getInt("user_id"));
+                        key.setKeyVersion(rs.getInt("key_version"));
+                        key.setPublicKey(rs.getString("public_key"));
+                        key.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime().toLocalDate());
+                        key.setIsActive(rs.getInt("is_active"));
+                        return key;
+                    })
+                    .findOne()
+                    .orElse(null);
+        });
+    }
 
 
 
@@ -61,5 +81,4 @@ public class PublicKeyDao {
                     .list();
         });
     }
-
 }

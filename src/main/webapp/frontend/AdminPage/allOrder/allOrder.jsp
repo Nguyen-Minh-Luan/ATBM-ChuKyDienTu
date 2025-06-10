@@ -126,6 +126,11 @@
                             href="${pageContext.request.contextPath}/admin/table/collections"
                     >Bộ sưu tập</a
                     >
+                    <a
+                            class="collapse-item"
+                            href="${pageContext.request.contextPath}/admin/table/check-digital-signatures"
+                    >Check chữ ký điện tử</a
+                    >
                 </div>
             </div>
         </li>
@@ -416,6 +421,12 @@
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#removeModal"
                                         ></button>
+                                        <button
+                                                class="btn btn-success btn-check-signature"
+                                                data-order-id="${order.id}"
+                                        >
+                                            Kiểm tra chữ ký
+                                        </button>
                                     </td>
                                 </tr>
                                 </c:forEach>
@@ -743,6 +754,30 @@
             hiddenInput.value = this.checked ? 1 : 0;
         });
     </script>
+
 </div>
+<script>
+    document.querySelectorAll('.btn-check-signature').forEach(button => {
+        button.addEventListener('click', function () {
+            const orderId = this.dataset.orderId;
+            fetch(`${window.location.origin}/admin/table/check-digital-signatures?orderId=`+orderId)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Không thể xác thực chữ ký");
+                    }
+                    return response.text();
+                })
+                .then(hash => {
+                    alert("Hash của đơn hàng là:\n" + hash + "\nHệ thống đã kiểm tra thành công.");
+                    // Hoặc kiểm tra trực tiếp tại đây nếu có signature:
+                    // Gọi AJAX POST đến controller để gọi checkDigitalSignature(...)
+                })
+                .catch(error => {
+                    alert("Lỗi khi xác thực chữ ký: " + error.message);
+                });
+        });
+    });
+</script>
+
 </body>
 </html>

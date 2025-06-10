@@ -128,7 +128,7 @@
                     >
                     <a
                             class="collapse-item"
-                            href="${pageContext.request.contextPath}/admin/table/collections"
+                            href="${pageContext.request.contextPath}/admin/table/check-digital-signatures"
                     >Check chữ ký điện tử</a
                     >
                 </div>
