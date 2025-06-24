@@ -22,7 +22,7 @@ import java.util.List;
 )
 public class createProductController extends HttpServlet {
     private static final String ULOAD_DIR = "uploads";
-    private static final String UPLOAD_DIR_SERVER = "C:\\Users\\huynh\\OneDrive\\Desktop\\Nhom38-BanThatLung\\src\\main\\webapp\\uploads";
+    private static final String UPLOAD_DIR_SERVER = "D:\\ATBM-ChuKyDienTu\\src\\main\\webapp\\assets\\uploads";
     private static final UploadProductService uploadProductService = new UploadProductService();
 
     @Override
