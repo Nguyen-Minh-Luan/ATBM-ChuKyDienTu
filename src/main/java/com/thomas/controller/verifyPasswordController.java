@@ -67,6 +67,10 @@ public class verifyPasswordController extends HttpServlet {
                 throw new RuntimeException(e);
             }
 
+        }else{
+            request.setAttribute("error", "true");
+            request.getRequestDispatcher("/frontend/genKeyPairPage/verifyPassword2.jsp").forward(request, response);
+
         }
     }
 }
