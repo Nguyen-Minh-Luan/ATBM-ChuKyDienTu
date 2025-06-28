@@ -21,7 +21,7 @@ import java.util.List;
         maxRequestSize = 1024 * 1024 * 50
 )
 public class createProductController extends HttpServlet {
-    private static final String ULOAD_DIR = "uploads";
+    private static final String ULOAD_DIR = "assets/uploads";
     private static final String UPLOAD_DIR_SERVER = "D:\\ATBM-ChuKyDienTu\\src\\main\\webapp\\assets\\uploads";
     private static final UploadProductService uploadProductService = new UploadProductService();
 
@@ -76,7 +76,7 @@ public class createProductController extends HttpServlet {
             productId = Integer.parseInt(request.getParameter("beltId"));
             uploadProductService.updateProduct(productId, productName, tags, discountPercent, releaseDate, gender, price, stockQuantity, material, isDeleted);
         }
-        String uploadPath = request.getServletContext().getRealPath("") + File.separator + ULOAD_DIR;
+        String uploadPath = request.getServletContext().getRealPath("") + "/" + ULOAD_DIR;
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
