@@ -19,6 +19,10 @@
                 <input type="password" id="password" name="password" class="form-control" required>
             </div>
 
+                <div class="alert alert-danger p-2 text-center" role="alert">
+                    ❌ Mật khẩu không đúng. Vui lòng thử lại.
+                </div>
+
 
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">Xác nhận</button>
