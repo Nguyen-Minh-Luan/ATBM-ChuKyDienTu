@@ -262,19 +262,6 @@ public class UploadProductService {
     }
 
 
-    // nghiêng cứu lại
-
-//    public List<Belts> getMostPopularProducts() {
-//        List<Belts> list = getAllProductsForDisplay();
-//        list.sort(new Comparator<Belts>() {
-//            @Override
-//            public int compare(Belts o1, Belts o2) {
-//                return (int) o2.getViewCount() - o1.getViewCount();
-//            }
-//        });
-//        return list;
-//    }
-
 
     public List<Belts> getNewArrivals() {
         List<Belts> list = getAllProductsForDisplay();

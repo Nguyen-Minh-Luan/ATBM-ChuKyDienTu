@@ -21,7 +21,7 @@ import java.util.List;
 public class uploadController extends HttpServlet {
     // Path where files will be saved
     UploadProductService uploadProductService = new UploadProductService();
-    private static final String ULOAD_DIR = "uploads";
+    private static final String ULOAD_DIR = "assets/uploads";
     private static final String UPLOAD_DIR_SERVER = "D:\\ATBM-ChuKyDienTu\\src\\main\\webapp\\assets\\uploads";
 
     // Configure the maximum file size
